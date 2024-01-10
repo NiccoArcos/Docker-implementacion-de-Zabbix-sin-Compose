@@ -1,0 +1,33 @@
+Descargar las imagenes:
+docker pull mysql:8.0.0
+docker pull zabbix/zabbix-server-mysql
+docker pull zabbix/zabbix-web-nginx-mysql
+docker pull zabbix/zabbix-java-gateway
+docker pull zabbix/zabbix-agent2
+
+Fuente:
+https://hub.docker.com/u/zabbix
+----------------------------------------------------------------------------------------------------------------------------------------------
+Crear Volumen para persistencia en base de datos:
+docker volume create mysql_data
+
+Crear Volumen para el servidor zabbix:
+docker volume create zabbix-server_data
+
+Crear Volumen para el servidor web:
+docker volume create zabbix-web_data
+
+Crear Volumen para el zabbix-java-gateway:
+docker volume create zabbix-java-gateway_data
+
+----------------------------------------------------------------------------------------------------------------------------------------------
+Creamos una red personalizada de Docker para que los contenedores formen parte de la misma y puedan verse entre si
+
+docker network create red_zabbix6.4
+
+----------------------------------------------------------------------------------------------------------------------------------------------
+Correr los Contenedores pasando variables de entorno, volumen, red y demas caracteristicas:
+
+docker run --mysql-server -t -e MYSQL_DATABASE="zabbix" -e MYSQL_USER="zabbix" -e MYSQL_PASSWORD="zabbix" -e MYSQL_ROOT_PASSWORD="zabbix" -v mysql_data:/var/lib/mysql --network red_zabbix6.4 -d mysql
+
+docker run --name zabbix-server-mysql -t -e DB_SERVER_HOST="mysql-server" -e MYSQL_DATABASE="zabbix" -e MYSQL_USER="zabbix" -e MYSQL_PASSWORD="zabbix" -e MYSQL_ROOT_PASSWORD="zabbix" -e ZBX_JAVAGATEWAY="zabbix-java-gateway" -v zabbix-server_data
