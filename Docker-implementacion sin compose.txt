@@ -37,44 +37,7 @@ docker run --name zabbix-server-mysql -t -e DB_SERVER_HOST="mysql-server" -e MYS
 Zabbix-Web-Nginx-Mysql:
 docker run --name zabbix-web-nginx-mysql -t -e DB_SERVER_HOST="mysql-server"  -e MYSQL_DATABASE="zabbix" -e MYSQL_USER="zabbix" -e MYSQL_PASSWORD="zabbix" -e MYSQL_ROOT_PASSWORD="zabbix" --network red_zabbix6.4 -v zabbix-web_data:/usr/share/zabbix -p 80:8080 --restart unless-stopped -d zabbix/zabbix-web-nginx-mysql
 
-Descargar las imagenes:
-docker pull mysql:8.0.0
-docker pull zabbix/zabbix-server-mysql
-docker pull zabbix/zabbix-web-nginx-mysql
-docker pull zabbix/zabbix-java-gateway
-docker pull zabbix/zabbix-agent2
-
-Fuente:
-https://hub.docker.com/u/zabbix
-----------------------------------------------------------------------------------------------------------------------------------------------
-Crear Volumen para persistencia en base de datos:
-docker volume create mysql_data
-
-Crear Volumen para el servidor zabbix:
-docker volume create zabbix-server_data
-
-Crear Volumen para el servidor web:
-docker volume create zabbix-web_data
-
-Crear Volumen para el zabbix-java-gateway:
-docker volume create zabbix-java-gateway_data
-
-----------------------------------------------------------------------------------------------------------------------------------------------
-Creamos una red personalizada de Docker para que los contenedores formen parte de la misma y puedan verse entre si
-
-docker network create red_zabbix6.4
-
-----------------------------------------------------------------------------------------------------------------------------------------------
-Correr los Contenedores pasando variables de entorno, volumen, red y demas caracteristicas:
-
-MYSQL:
-docker run --name mysql-server -t -e MYSQL_DATABASE="zabbix" -e MYSQL_USER="zabbix" -e MYSQL_PASSWORD="zabbix" -e MYSQL_ROOT_PASSWORD="zabbix" -v mysql_data:/var/lib/mysql --network red_zabbix6.4 -d mysql --character-set-server=utf8 --collation-server=utf8_bin --default-authentication-plugin=mysql_native_password
-
-Zabbix-Server-Mysql:
-docker run --name zabbix-server-mysql -t -e DB_SERVER_HOST="mysql-server" -e MYSQL_DATABASE="zabbix" -e MYSQL_USER="zabbix" -e MYSQL_PASSWORD="zabbix" -e MYSQL_ROOT_PASSWORD="zabbix" -e ZBX_JAVAGATEWAY="zabbix-java-gateway" -v zabbix-server_data:/var/lib/zabbix --network red_zabbix6.4 -p 10051:10051 --restart unless-stopped -d zabbix/zabbix-server-mysql
-
-Zabbix-Web-Nginx-Mysql:
-docker run --name zabbix-web-nginx-mysql -t -e DB_SERVER_HOST="mysql-server"  -e MYSQL_DATABASE="zabbix" -e MYSQL_USER="zabbix" -e MYSQL_PASSWORD="zabbix" -e MYSQL_ROOT_PASSWORD="zabbix" --network red_zabbix6.4 -v zabbix-web_data:/usr/share/zabbix -p 80:8080 --restart unless-stopped -d zabbix/zabbix-web-nginx-mysql
-
 Zabbix-Agent2:
 docker run --name zabbix-agent2 --network red_zabbix6.4 -e ZBX_HOSTNAME="Zabbix server" -e ZBX_SERVER_HOST="zabbix-server" -d zabbix/zabbix-agent2
+
+
