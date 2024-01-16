@@ -40,4 +40,6 @@ docker run --name zabbix-web-nginx-mysql -t -e DB_SERVER_HOST="mysql-server"  -e
 Zabbix-Agent2:
 docker run --name zabbix-agent2 --network red_zabbix6.4 -e ZBX_HOSTNAME="Zabbix server" -e ZBX_SERVER_HOST="zabbix-server" -d zabbix/zabbix-agent2
 
+Zabbix-Java Gateway:
+docker run --name zabbix-java-gateway -t --restart unless-stopped -v zabbix-java-gateway_data:/var/lib --network red_zabbix6.4 -d zabbix/zabbix-java-gateway
 
